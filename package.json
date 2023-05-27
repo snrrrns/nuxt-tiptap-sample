@@ -10,6 +10,17 @@
   },
   "devDependencies": {
     "@types/node": "^18",
-    "nuxt": "^3.5.1"
+    "nuxt": "^3.5.1",
+    "sass": "^1.62.1"
+  },
+  "dependencies": {
+    "@tiptap/extension-collaboration": "^2.0.3",
+    "@tiptap/extension-collaboration-cursor": "^2.0.3",
+    "@tiptap/pm": "^2.0.3",
+    "@tiptap/starter-kit": "^2.0.3",
+    "@tiptap/vue-3": "^2.0.3",
+    "y-prosemirror": "^1.0.20",
+    "y-websocket": "^1.5.0",
+    "yjs": "^13.6.1"
   }
 }
