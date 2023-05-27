@@ -2,7 +2,7 @@
   <editor-content :editor="editor" />
 </template>
 
-<script lang="ts">
+<script  lang="ts">
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import Collaboration from '@tiptap/extension-collaboration';
@@ -66,6 +66,11 @@ export default {
   },
 
   methods: {
+    /**
+     * 共同編集者のカーソルの色をランダムで取得
+     * 
+     * @returns string 色コード
+     */
     getRandomColor(): string {
       const list = [
         '#958DF1',
@@ -78,7 +83,11 @@ export default {
       ];
       return list[Math.floor(Math.random() * list.length)];
     },
-
+    /**
+     * 共同編集者名をランダムで取得
+     * 
+     * @returns string 名前
+     */
     getRandomName(): string {
       const list = [
         'Lea Thompson',
