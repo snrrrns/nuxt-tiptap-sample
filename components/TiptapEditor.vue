@@ -13,7 +13,7 @@ const provider = ref<WebsocketProvider | undefined>();
 /**
  * 共同編集者のカーソルの色をランダムで取得
  * 
- * @returns string 色コード
+ * @returns {string} 色コード
  */
 function getRandomColor(): string {
   const list = [
@@ -31,7 +31,7 @@ function getRandomColor(): string {
 /**
  * 共同編集者名をランダムで取得
  * 
- * @returns string 名前
+ * @returns {string} 名前
  */
 function getRandomName(): string {
   const list = [
