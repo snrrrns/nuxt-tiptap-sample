@@ -5,6 +5,9 @@
 <script lang="ts">
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
+import Collaboration from '@tiptap/extension-collaboration';
+import { WebsocketProvider } from 'y-websocket';
+import * as Y from 'yjs';
 import { ShallowRef } from 'vue';
 
 /**
@@ -14,6 +17,7 @@ import { ShallowRef } from 'vue';
  */
 type EditorItem = {
   editor: ShallowRef<Editor>,
+  provider: WebsocketProvider,
 };
 
 export default {
@@ -23,18 +27,26 @@ export default {
   data(): EditorItem {
     return {
       editor: null as unknown as ShallowRef<Editor>,
+      provider: null as unknown as WebsocketProvider,
     };
   },
   mounted() {
+    const ydoc = new Y.Doc;
+    this.provider = new WebsocketProvider('ws://localhost:1234', 'sample-document', ydoc);
+
     this.editor = new Editor({
       content: '',
       extensions: [
         StarterKit,
+        Collaboration.configure({
+          document: ydoc,
+        }),
       ],
     });
   },
   beforeDestroy() {
-    this.editor.destroy();
+    this.editor?.destroy();
+    this.provider?.destroy();
   },
 }
 </script>
