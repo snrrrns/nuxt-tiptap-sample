@@ -3,75 +3,29 @@
 </template>
 
 <script  lang="ts">
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
-import { ShallowRef } from 'vue';
-
-/**
- * 注意: 型エラーを回避するために'Editor'ではなく'ShallowRef<Editor>'を使用している
- * 一時的な修正なので、'@tiptap/vue-3'の問題が解決したら見直す必要がある
- * Docs: https://github.com/ueberdosis/tiptap/issues/1344
- */
-type EditorItem = {
-  editor: ShallowRef<Editor>,
-  provider: WebsocketProvider,
-};
 
 export default {
   components: {
     EditorContent,
   },
 
-  data(): EditorItem {
-    return {
-      editor: null as unknown as ShallowRef<Editor>,
-      provider: null as unknown as WebsocketProvider,
-    };
-  },
+  setup() {
+    const editor = ref<Editor | undefined>();
+    const provider = ref<WebsocketProvider | undefined>();
 
-  mounted() {
-    const ydoc = new Y.Doc;
-
-    this.provider = new WebsocketProvider(
-      'ws://localhost:1234',
-      'sample-document',
-      ydoc)
-    ;
-
-    this.editor = new Editor({
-      content: '',
-      extensions: [
-        StarterKit,
-        Collaboration.configure({
-          document: ydoc,
-        }),
-        CollaborationCursor.configure({
-          provider: this.provider,
-          user: {
-            name: this.getRandomName(),
-            color: this.getRandomColor(),
-          }
-        }),
-      ],
-    });
-  },
-
-  beforeDestroy() {
-    this.editor?.destroy();
-    this.provider?.destroy();
-  },
-
-  methods: {
     /**
      * 共同編集者のカーソルの色をランダムで取得
      * 
      * @returns string 色コード
      */
-    getRandomColor(): string {
+    function getRandomColor(): string {
       const list = [
         '#958DF1',
         '#F98181',
@@ -82,13 +36,14 @@ export default {
         '#B9F18D',
       ];
       return list[Math.floor(Math.random() * list.length)];
-    },
+    }
+
     /**
      * 共同編集者名をランダムで取得
      * 
      * @returns string 名前
      */
-    getRandomName(): string {
+    function getRandomName(): string {
       const list = [
         'Lea Thompson',
         'Cyndi Lauper',
@@ -119,7 +74,45 @@ export default {
       ];
       return list[Math.floor(Math.random() * list.length)];
     }
-  }
+
+    onMounted(() => {
+      const ydoc = new Y.Doc;
+
+      provider.value = new WebsocketProvider(
+        'ws://localhost:1234',
+        'sample-document',
+        ydoc);
+
+      editor.value = new Editor({
+        content: '',
+        extensions: [
+          StarterKit,
+          Collaboration.configure({
+            document: ydoc,
+          }),
+          CollaborationCursor.configure({
+            provider: provider.value,
+            user: {
+              name: getRandomName(),
+              color: getRandomColor(),
+            }
+          }),
+        ],
+      });
+    });
+
+    onBeforeUnmount(() => {
+      editor.value?.destroy();
+      provider.value?.destroy();
+    });
+
+    return {
+      editor,
+      provider,
+      getRandomColor,
+      getRandomName
+    };
+  },
 }
 </script>
 
