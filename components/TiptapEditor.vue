@@ -25,12 +25,14 @@ export default {
   components: {
     EditorContent,
   },
+
   data(): EditorItem {
     return {
       editor: null as unknown as ShallowRef<Editor>,
       provider: null as unknown as WebsocketProvider,
     };
   },
+
   mounted() {
     const ydoc = new Y.Doc;
 
@@ -57,10 +59,12 @@ export default {
       ],
     });
   },
+
   beforeDestroy() {
     this.editor?.destroy();
     this.provider?.destroy();
   },
+
   methods: {
     getRandomColor(): string {
       const list = [
@@ -199,6 +203,7 @@ export default {
     }
   }
 }
+
 /* Give a remote user a caret */
 .collaboration-cursor__caret {
   position: relative;
