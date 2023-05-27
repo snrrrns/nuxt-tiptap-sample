@@ -1,8 +1,4 @@
-<template>
-  <editor-content :editor="editor" />
-</template>
-
-<script  lang="ts">
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
@@ -11,110 +7,99 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
 
-export default {
-  components: {
-    EditorContent,
-  },
+const editor = ref<Editor | undefined>();
+const provider = ref<WebsocketProvider | undefined>();
 
-  setup() {
-    const editor = ref<Editor | undefined>();
-    const provider = ref<WebsocketProvider | undefined>();
-
-    /**
-     * 共同編集者のカーソルの色をランダムで取得
-     * 
-     * @returns string 色コード
-     */
-    function getRandomColor(): string {
-      const list = [
-        '#958DF1',
-        '#F98181',
-        '#FBBC88',
-        '#FAF594',
-        '#70CFF8',
-        '#94FADB',
-        '#B9F18D',
-      ];
-      return list[Math.floor(Math.random() * list.length)];
-    }
-
-    /**
-     * 共同編集者名をランダムで取得
-     * 
-     * @returns string 名前
-     */
-    function getRandomName(): string {
-      const list = [
-        'Lea Thompson',
-        'Cyndi Lauper',
-        'Tom Cruise',
-        'Madonna',
-        'Jerry Hall',
-        'Joan Collins',
-        'Winona Ryder',
-        'Christina Applegate',
-        'Alyssa Milano',
-        'Molly Ringwald',
-        'Ally Sheedy',
-        'Debbie Harry',
-        'Ally Sheedy',
-        'Olivia Newton-John',
-        'Elton John',
-        'Micheal J. Fox',
-        'Axl Rose',
-        'Emilio Estevez',
-        'Ralph Macchio',
-        'Rob Lowe',
-        'Jennifer Grey',
-        'Mickey Rourke',
-        'John Cusack',
-        'Matthew Broderick',
-        'Justine Bateman',
-        'Lisa Bonet',
-      ];
-      return list[Math.floor(Math.random() * list.length)];
-    }
-
-    onMounted(() => {
-      const ydoc = new Y.Doc;
-
-      provider.value = new WebsocketProvider(
-        'ws://localhost:1234',
-        'sample-document',
-        ydoc);
-
-      editor.value = new Editor({
-        content: '',
-        extensions: [
-          StarterKit,
-          Collaboration.configure({
-            document: ydoc,
-          }),
-          CollaborationCursor.configure({
-            provider: provider.value,
-            user: {
-              name: getRandomName(),
-              color: getRandomColor(),
-            }
-          }),
-        ],
-      });
-    });
-
-    onBeforeUnmount(() => {
-      editor.value?.destroy();
-      provider.value?.destroy();
-    });
-
-    return {
-      editor,
-      provider,
-      getRandomColor,
-      getRandomName
-    };
-  },
+/**
+ * 共同編集者のカーソルの色をランダムで取得
+ * 
+ * @returns string 色コード
+ */
+function getRandomColor(): string {
+  const list = [
+    '#958DF1',
+    '#F98181',
+    '#FBBC88',
+    '#FAF594',
+    '#70CFF8',
+    '#94FADB',
+    '#B9F18D',
+  ];
+  return list[Math.floor(Math.random() * list.length)];
 }
+
+/**
+ * 共同編集者名をランダムで取得
+ * 
+ * @returns string 名前
+ */
+function getRandomName(): string {
+  const list = [
+    'Lea Thompson',
+    'Cyndi Lauper',
+    'Tom Cruise',
+    'Madonna',
+    'Jerry Hall',
+    'Joan Collins',
+    'Winona Ryder',
+    'Christina Applegate',
+    'Alyssa Milano',
+    'Molly Ringwald',
+    'Ally Sheedy',
+    'Debbie Harry',
+    'Ally Sheedy',
+    'Olivia Newton-John',
+    'Elton John',
+    'Micheal J. Fox',
+    'Axl Rose',
+    'Emilio Estevez',
+    'Ralph Macchio',
+    'Rob Lowe',
+    'Jennifer Grey',
+    'Mickey Rourke',
+    'John Cusack',
+    'Matthew Broderick',
+    'Justine Bateman',
+    'Lisa Bonet',
+  ];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+onMounted(() => {
+  const ydoc = new Y.Doc;
+
+  provider.value = new WebsocketProvider(
+    'ws://localhost:1234',
+    'sample-document',
+    ydoc);
+
+  editor.value = new Editor({
+    content: '',
+    extensions: [
+      StarterKit,
+      Collaboration.configure({
+        document: ydoc,
+      }),
+      CollaborationCursor.configure({
+        provider: provider.value,
+        user: {
+          name: getRandomName(),
+          color: getRandomColor(),
+        }
+      }),
+    ],
+  });
+});
+
+onBeforeUnmount(() => {
+  editor.value?.destroy();
+  provider.value?.destroy();
+});
 </script>
+
+<template>
+  <editor-content :editor="editor" />
+</template>
 
 <style lang="scss">
 /* Basic editor styles */
