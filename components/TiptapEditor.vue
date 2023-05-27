@@ -7,60 +7,34 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
 
+enum UserColor {
+  BLUE = '#958DF1',
+  RED = '#F98181',
+  YELLOW = '#FBBC88',
+  ORANGE = '#FAF594',
+  GREEN = '#70CFF8',
+  LIGHT_BLUE = '#94FADB',
+  LIGHT_GREEN = '#B9F18D',
+}
+
 const editor = ref<Editor | undefined>();
 const provider = ref<WebsocketProvider | undefined>();
+const authorName = ref('anonymous');
 
 /**
  * 共同編集者のカーソルの色をランダムで取得
  * 
- * @returns {string} 色コード
+ * @returns {UserColor} 色コード
  */
-function getRandomColor(): string {
+function getRandomColor(): UserColor {
   const list = [
-    '#958DF1',
-    '#F98181',
-    '#FBBC88',
-    '#FAF594',
-    '#70CFF8',
-    '#94FADB',
-    '#B9F18D',
-  ];
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-/**
- * 共同編集者名をランダムで取得
- * 
- * @returns {string} 名前
- */
-function getRandomName(): string {
-  const list = [
-    'Lea Thompson',
-    'Cyndi Lauper',
-    'Tom Cruise',
-    'Madonna',
-    'Jerry Hall',
-    'Joan Collins',
-    'Winona Ryder',
-    'Christina Applegate',
-    'Alyssa Milano',
-    'Molly Ringwald',
-    'Ally Sheedy',
-    'Debbie Harry',
-    'Ally Sheedy',
-    'Olivia Newton-John',
-    'Elton John',
-    'Micheal J. Fox',
-    'Axl Rose',
-    'Emilio Estevez',
-    'Ralph Macchio',
-    'Rob Lowe',
-    'Jennifer Grey',
-    'Mickey Rourke',
-    'John Cusack',
-    'Matthew Broderick',
-    'Justine Bateman',
-    'Lisa Bonet',
+    UserColor.BLUE,
+    UserColor.RED,
+    UserColor.YELLOW,
+    UserColor.ORANGE,
+    UserColor.GREEN,
+    UserColor.LIGHT_BLUE,
+    UserColor.LIGHT_GREEN,
   ];
   return list[Math.floor(Math.random() * list.length)];
 }
@@ -83,7 +57,7 @@ onMounted(() => {
       CollaborationCursor.configure({
         provider: provider.value,
         user: {
-          name: getRandomName(),
+          name: authorName,
           color: getRandomColor(),
         }
       }),
@@ -98,6 +72,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <input type="text" v-model="authorName">
   <editor-content :editor="editor" />
 </template>
 
